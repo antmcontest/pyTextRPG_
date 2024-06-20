@@ -80,11 +80,17 @@ text_rpg/
 ├── inventory.py
 
 ├── item.py
+
 ├── main.py
+
 ├── menu.py
+
 ├── quest.py
+
 ├── save_load.py
+
 ├── town.py
+
 └── ui.py
 
 
