@@ -2,17 +2,21 @@ from equipment import Equipment
 from inventory import Inventory
 
 class Character:
-    def __init__(self, name, health, attack_power):
+    def __init__(self, name, health, attack_power, mana):
         self.name = name
         self.max_health = health
         self.health = health
         self.attack_power = attack_power
+        self.max_mana = mana
+        self.mana = mana
         self.inventory = Inventory()
         self.equipment = Equipment()
         self.level = 1
         self.experience = 0
         self.experience_to_next_level = 100
         self.abilities = []
+        self.quests = []
+        self.killed_wolves = 0
 
     def attack(self, other):
         total_attack_power = self.attack_power + self.equipment.get_total_attack_power()
@@ -23,6 +27,21 @@ class Character:
             self.gain_experience(50)  # Gain experience for defeating enemies
         else:
             print(f"{other.name}'s remaining health: {other.health}")
+
+    def use_ability(self, ability_name, target):
+        for ability in self.abilities:
+            if ability.name == ability_name:
+                if self.mana >= ability.mana_cost:
+                    ability.use(self, target)
+                    self.mana -= ability.mana_cost
+                else:
+                    print("Not enough mana!")
+                return
+        print(f"Ability {ability_name} not found.")
+
+    def learn_ability(self, ability):
+        self.abilities.append(ability)
+        print(f"{self.name} has learned {ability.name}!")
 
     def gain_experience(self, amount):
         self.experience += amount
@@ -37,6 +56,8 @@ class Character:
         self.max_health += 20
         self.health = self.max_health
         self.attack_power += 5
+        self.max_mana += 10
+        self.mana = self.max_mana
         print(f"{self.name} has leveled up to level {self.level}!")
 
     def heal(self, amount):
@@ -54,6 +75,7 @@ class Character:
     def show_status(self):
         print(f"Character: {self.name}")
         print(f"Health: {self.health}/{self.max_health}")
+        print(f"Mana: {self.mana}/{self.max_mana}")
         print(f"Attack Power: {self.attack_power}")
         print("Inventory:")
         for item in self.inventory.items:

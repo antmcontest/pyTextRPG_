@@ -1,9 +1,11 @@
 class Enemy:
-    def __init__(self, name, health, attack_power, loot):
+    def __init__(self, name, health, attack_power, loot, level=1):
         self.name = name
+        self.max_health = health
         self.health = health
         self.attack_power = attack_power
         self.loot = loot
+        self.level = level
 
     def attack(self, other):
         other.health -= self.attack_power
@@ -18,3 +20,13 @@ class Enemy:
 
     def drop_loot(self):
         return self.loot
+
+
+class Goblin(Enemy):
+    def __init__(self):
+        super().__init__("Goblin", 30, 5, [Loot("Goblin Ear")], level=2)
+
+class GoblinKing(Enemy):
+    def __init__(self):
+        super().__init__("Goblin King", 100, 15, [Loot("Goblin Crown")], level=5)
+

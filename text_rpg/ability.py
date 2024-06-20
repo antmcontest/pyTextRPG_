@@ -1,6 +1,7 @@
 class Ability:
-    def __init__(self, name, damage, effect=None):
+    def __init__(self, name, mana_cost, damage, effect=None):
         self.name = name
+        self.mana_cost = mana_cost
         self.damage = damage
         self.effect = effect
 
@@ -9,13 +10,6 @@ class Ability:
         print(f"{user.name} uses {self.name} on {target.name} for {self.damage} damage")
         if self.effect:
             self.effect.apply(target)
+        if target.health <= 0:
+            print(f"{target.name} has been defeated!")
 
-class Effect:
-    def __init__(self, name, duration, apply_effect):
-        self.name = name
-        self.duration = duration
-        self.apply_effect = apply_effect
-
-    def apply(self, target):
-        self.apply_effect(target)
-        print(f"{target.name} is affected by {self.name} for {self.duration} turns")
