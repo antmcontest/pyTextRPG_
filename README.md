@@ -62,14 +62,23 @@ python text_rpg/main.py
 ## File Structure
 
 text_rpg/
+
 ├── __init__.py
+
 ├── ability.py
+
 ├── character.py
+
 ├── combat.py
+
 ├── enemy.py
+
 ├── equipment.py
+
 ├── helpers.py
+
 ├── inventory.py
+
 ├── item.py
 ├── main.py
 ├── menu.py
