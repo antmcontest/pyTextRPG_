@@ -48,6 +48,7 @@ To start the game, run the following command:
 
 ```bash
 python text_rpg/main.py
+```
 
 ## Controls
 
