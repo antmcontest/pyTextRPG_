@@ -1,7 +1,7 @@
 from text_rpg.save_load import save_game, load_game
 from text_rpg.item import Item, Equipment
 from text_rpg.helpers import has_killed_wolves, has_found_rare_herb
-from text_rpg.effect import Effect
+from text_rpg.effect import Effect, Burn
 from text_rpg.ability import Ability
 
 class Menu:
@@ -11,37 +11,6 @@ class Menu:
 
     def display_menu(self):
         self.ui.display_main_menu()
-        choice = self.ui.get_user_input()
-        if choice == '1':
-            self.visit_shop()
-        elif choice == '2':
-            self.talk_to_blacksmith()
-        elif choice == '3':
-            self.talk_to_healer()
-        elif choice == '4':
-            self.visit_tavern()
-        elif choice == '5':
-            self.visit_library()
-        elif choice == '6':
-            self.visit_marketplace()
-        elif choice == '7':
-            self.ui.display_status(self.hero)
-        elif choice == '8':
-            self.equip_item()
-        elif choice == '9':
-            self.manage_inventory()
-        elif choice == '10':
-            save_game(self.hero)
-        elif choice == '11':
-            loaded_hero = load_game()
-            if loaded_hero:
-                self.hero = loaded_hero
-        elif choice == '12':
-            return "continue_adventure"
-        elif choice == '13':
-            return "quit_game"
-        else:
-            self.ui.display_invalid_choice()
 
     def visit_shop(self):
         while True:
@@ -61,6 +30,19 @@ class Menu:
                 self.ui.display_invalid_choice()
         self.display_menu()
 
+    def equip_item(self):
+        self.ui.display_status(self.hero)
+        item_name = self.ui.get_item_name()
+        if item_name:
+            item = self.hero.inventory.get_item(item_name)
+            if item and isinstance(item, Equipment):
+                self.hero.equip_item(item_name)
+                self.ui.display_message(f"{item_name} has been equipped.")
+            else:
+                self.ui.display_message(f"{item_name} not found or not equippable.")
+        self.display_menu()
+
+
     def buy_item(self, item_name, cost, item):
         self.ui.display_confirmation(f"Do you want to buy a {item_name} for {cost} gold?")
         confirmation = self.ui.get_confirmation_input()
@@ -72,30 +54,6 @@ class Menu:
                 self.ui.display_message("Not enough gold.")
         elif confirmation == 'no':
             self.ui.display_message("Purchase canceled.")
-
-    def manage_inventory(self):
-        while True:
-            self.ui.display_inventory_menu(self.hero)
-            choice = self.ui.get_user_input()
-            if choice == '1':
-                self.ui.display_inventory(self.hero)
-            elif choice == '2':
-                item_name = self.ui.get_item_name()
-                self.hero.inventory.use_item(item_name, self.hero)
-            elif choice == '3':
-                item_name = self.ui.get_item_name()
-                self.hero.inventory.remove_item(item_name)
-            elif choice == '4':
-                item_name = self.ui.get_item_name()
-                self.sell_item(item_name)
-            elif choice == '5':
-                item_name = self.ui.get_item_name()
-                self.upgrade_item(item_name)
-            elif choice == '6':
-                break
-            else:
-                self.ui.display_invalid_choice()
-        self.display_menu()
 
     def sell_item(self, item_name):
         item = self.hero.inventory.get_item(item_name)
@@ -175,8 +133,8 @@ class Menu:
             if choice == '1':
                 self.ui.display_town_history()
             elif choice == '2':
-                fireball_effect = Effect("Burn", 3, lambda target: setattr(target, 'health', target.health - 5))
-                fireball = Ability("Fireball", 30, fireball_effect)
+                # fireball_effect = Effect("Burn", 3, lambda target: setattr(target, 'health', target.health - 5))
+                fireball = Ability("Fireball", 30, Burn)  #  fireball_effect)
                 self.hero.learn_ability(fireball)
                 self.ui.display_learn_spell("Fireball")
             elif choice == '3':
@@ -203,8 +161,27 @@ class Menu:
                 self.ui.display_invalid_choice()
         self.display_menu()
 
-    def equip_item(self):
-        self.ui.display_status(self.hero)
-        item_name = self.ui.get_item_name()
-        self.hero.equip_item(item_name)
+    def manage_inventory(self):
+        while True:
+            self.ui.display_inventory_menu(self.hero)
+            choice = self.ui.get_user_input()
+            if choice == '1':
+                self.ui.display_inventory(self.hero)
+            elif choice == '2':
+                item_name = self.ui.get_item_name()
+                self.hero.inventory.use_item(item_name, self.hero)
+            elif choice == '3':
+                item_name = self.ui.get_item_name()
+                self.hero.inventory.remove_item(item_name)
+            elif choice == '4':
+                item_name = self.ui.get_item_name()
+                self.sell_item(item_name)
+            elif choice == '5':
+                item_name = self.ui.get_item_name()
+                self.upgrade_item(item_name)
+            elif choice == '6':
+                break
+            else:
+                self.ui.display_invalid_choice()
         self.display_menu()
+

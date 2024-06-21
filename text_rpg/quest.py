@@ -23,18 +23,20 @@ class Quest(Adventure):
     def start(self, hero, ui):
         print(f"Starting quest: {self.name}")
         if self.name == "Kill Wolves":
-            wolf_template = Enemy("Wolf", 50, 10, [Loot("Wolf Fur"), Loot("Wolf Bones")], level=1)
+            wolf_template = Enemy("Wolf", 50, 10, 1, [Loot("Wolf Fur"), Loot("Wolf Bones")], level=1)
             encounter_wolves(hero, wolf_template, self, ui)
         self.check_completion(hero, ui)
 
 class Dungeon(Adventure):
     def start(self, hero, ui):
         print(f"Starting dungeon: {self.name}")
-        enemies = [Enemy("Goblin", 30, 5, [Loot("Goblin Ear")], level=2) for _ in range(5)]
-        boss = Enemy("Goblin King", 100, 15, [Loot("Goblin Crown")], level=5)
+        enemies = [Enemy("Goblin", 30, 10, 3, [Loot("Goblin Ear")], level=3) for _ in range(5)]
+        boss = Enemy("Goblin King", 100, 20, 10, [Loot("Goblin Crown")], level=8)
         for enemy in enemies:
             if hero.is_alive():
                 encounter_enemy(hero, enemy, ui)
+                if not boss.is_alive():
+                    self.is_completed = True
         if hero.is_alive():
             encounter_enemy(hero, boss, ui)
         self.check_completion(hero, ui)

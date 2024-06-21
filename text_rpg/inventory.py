@@ -1,4 +1,4 @@
-from item import Gold, Equipment
+from item import Gold, Equipment, Item, HealthPotion
 
 class Inventory:
     def __init__(self):
@@ -20,15 +20,24 @@ class Inventory:
         print(f"{item_name} not found in inventory.")
         return False
 
-    def use_item(self, item_name, target):
+    def get_item(self, item_name):
         for item in self.items:
             if item.name == item_name:
-                if isinstance(item, Item):
-                    item.use(target)
-                    self.items.remove(item)
-                return True
-        print(f"{item_name} not found in inventory.")
-        return False
+                return item
+        return None
+
+    def use_item(self, item_name, character):
+        item = self.get_item(item_name)
+        if isinstance(item, HealthPotion):
+            actual_heal = item.use(character)
+            self.remove_item(item_name)
+            return actual_heal
+        elif isinstance(item, Item):
+            item.use(character)
+            self.remove_item(item_name)
+        else:
+            print(f"Item {item_name} not found or is not usable.")
+            return 0
 
     def spend_gold(self, amount):
         if self.gold >= amount:
